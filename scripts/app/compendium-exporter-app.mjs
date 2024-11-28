@@ -3,12 +3,16 @@ import { ExporterInstanciator } from '../exporters/exporter-instanciator.mjs';
 
 export class CompendiumExporterApp extends FormApplication {
   defaultExportOptions = {
+    useItemMapping: false,
     sortEntries: false,
+    sortFolders: false,
+    useIdAsKey: false,
     generateModule: false,
     translationLocale: 'en',
     customMapping: {
       actor: {},
       item: {},
+      scene: {}
     },
   };
   packId = null;
@@ -60,7 +64,8 @@ export class CompendiumExporterApp extends FormApplication {
       context.actorMapping = 'Actor' === context.pack.metadata.type;
       context.adventureMapping = 'Adventure' === context.pack.metadata.type;
       context.itemMapping = 'Item' === context.pack.metadata.type;
-      context.canCustomizeMapping = context.actorMapping || context.adventureMapping || context.itemMapping;
+      context.sceneMapping = 'Scene' === context.pack.metadata.type;
+      context.canCustomizeMapping = context.actorMapping || context.adventureMapping || context.itemMapping || context.sceneMapping;
       context.selectedFileName = this.selectedFile?.name;
     }
 
@@ -229,6 +234,7 @@ export class CompendiumExporterApp extends FormApplication {
     this.object.customMapping = packsMappings[this.packId.replace('.', '-')] ?? {
       actor: {},
       item: {},
+      scene: {}
     };
   }
 
@@ -257,6 +263,12 @@ export class CompendiumExporterApp extends FormApplication {
       if (json.mapping?.items) {
         for (const [key, value] of Object.entries(json.mapping.items)) {
           this._addCustomMappingEntry('item', { key, value });
+        }
+      }
+
+      if (json.mapping?.scenes) {
+        for (const [key, value] of Object.entries(json.mapping.scenes)) {
+          this._addCustomMappingEntry('scene', { key, value });
         }
       }
 
@@ -298,6 +310,12 @@ export class CompendiumExporterApp extends FormApplication {
       if (json?.item) {
         for (const { key, value } of Object.values(json.item)) {
           this._addCustomMappingEntry('item', { key, value });
+        }
+      }
+
+      if (json?.scene) {
+        for (const { key, value } of Object.values(json.scene)) {
+          this._addCustomMappingEntry('scene', { key, value });
         }
       }
 

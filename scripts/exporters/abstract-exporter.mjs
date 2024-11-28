@@ -9,6 +9,7 @@ export class AbstractExporter {
   dataset = {
     label: '',
     mapping: {},
+    folders: {},
     entries: {},
   };
   /**
@@ -29,6 +30,7 @@ export class AbstractExporter {
     this.pack = pack;
     this.existingFile = existingFile;
     this.existingContent = {};
+    this.existingFolders = {};
     this.dataset.label = pack.metadata.label;
     this.progessNbImported = 0;
     this.progessMessage = game.i18n.localize('BTFG.Exporter.ExportRunning');
@@ -43,9 +45,14 @@ export class AbstractExporter {
     await this._processExistingEntries();
     await this._processCustomMapping();
     await this._processDataset();
+    await this._processFolders();
 
     if (this.options.sortEntries) {
       this._sortEntries();
+    }
+
+    if (this.options.sortFolders) {
+      this._sortFolders();
     }
 
     this._endProgressBar();
@@ -73,6 +80,8 @@ export class AbstractExporter {
       }
 
       this.existingContent = json.entries;
+      this.existingFolders = json.folders ?? {};
+      this.dataset.label = json.label ?? this.dataset.label;
     } catch (err) {
       return ui.notifications.error(game.i18n.format('BTFG.Errors.CanNotReadFile', {
         name: this.existingFile.name,
@@ -87,7 +96,7 @@ export class AbstractExporter {
 
         break;
       case 'Adventure':
-        this.dataset.mapping = { actors: {}, items: {} };
+        this.dataset.mapping = { actors: {}, items: {}, scenes: {} };
 
         Object.values(this.options.customMapping.actor).forEach(
           ({ key, value }) => this.dataset.mapping.actors[key] = value,
@@ -95,10 +104,17 @@ export class AbstractExporter {
         Object.values(this.options.customMapping.item).forEach(
           ({ key, value }) => this.dataset.mapping.items[key] = value,
         );
+        Object.values(this.options.customMapping.scene).forEach(
+          ({ key, value }) => this.dataset.mapping.scenes[key] = value,
+        );
 
         break;
       case 'Item':
         Object.values(this.options.customMapping.item).forEach(({ key, value }) => this.dataset.mapping[key] = value);
+
+        break;
+      case 'Scene':
+        Object.values(this.options.customMapping.scene).forEach(({ key, value }) => this.dataset.mapping[key] = value);
 
         break;
     }
@@ -112,17 +128,26 @@ export class AbstractExporter {
     throw new Error('You must implement this function');
   }
 
-  static _addCustomMapping(customMapping, indexDocument, documentData) {
-    const flattenDocument = foundry.utils.flattenObject(indexDocument);
+  async _processFolders() {      
+    this.pack.folders.forEach((folder) => {
+      const name = folder.name;
+      this.dataset.folders[name] = this.existingFolders[name] ?? name;
+    });
+  }
 
+  static _getValueFromMapping(obj, mapping) {
+    return mapping.split('.').reduce((acc, part) => acc && acc[part], obj);
+  }
+
+  static _addCustomMapping(customMapping, indexDocument, documentData) {
     Object.values(customMapping).forEach(({ key, value }) => {
-      if (flattenDocument.hasOwnProperty(value)) {
-        documentData[key] = flattenDocument[value];
-      }
+      const documentValue = this._getValueFromMapping(indexDocument, value);
+      if (documentValue) documentData[key] = documentValue;
     });
   }
 
   static _hasContent(dataset) {
+    if (!dataset) return false;
     return Array.isArray(dataset) ? dataset.length : dataset.size;
   }
 
@@ -142,6 +167,15 @@ export class AbstractExporter {
       .reduce((acc, key) => ({
         ...acc,
         [key]: this.dataset.entries[key],
+      }), {});
+  }
+
+  _sortFolders(){
+    this.dataset.folders = Object.keys(this.dataset.folders)
+      .sort()
+      .reduce((acc, key) => ({
+        ...acc,
+        [key]: this.dataset.folders[key],
       }), {});
   }
 

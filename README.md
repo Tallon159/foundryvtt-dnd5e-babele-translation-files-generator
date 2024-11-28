@@ -1,6 +1,6 @@
 # BTFG Module
 
-Babele Translation Files Generator
+DnD5e - Translation files generator for Babele
 
 ![Foundry v11](https://img.shields.io/badge/foundry-v11-green)
 
@@ -12,15 +12,15 @@ Ce module permet de générer le fichier de traduction JSON d’un compendium af
 traductions pour des systèmes et/ou modules.
 
 Il est possible de traiter n’importe quel type de compendium et de personnaliser le fichier exporté grâce à la
-définition de mapping pour Babele (pour les compendiums `Actor`, `Item` et `Adventure`).
+définition de mapping pour Babele (pour les compendiums `Actor`, `Item`, `Scene` et `Adventure`).
 
 ## Installation
 
-Le système est installable directement depuis Foundry en recherchant son nom : `Babele Translation Files Generator`.
+Le système est installable directement depuis Foundry en recherchant son nom : `DnD5e - Translation files generator for Babele`.
 Vous aurez alors la dernière version et profiterez des mises à jour automatiques.
 
 Sinon, il est possible l’ajouter en utilisant le lien de son manifest :
-`https://github.com/DjLeChuck/foundryvtt-babele-translation-files-generator/releases/latest/download/module.json`
+`https://github.com/Enielka/foundryvtt-dnd5e-babele-translation-files-generator/releases/latest/download/module.json`
 
 ## Utilisation
 
@@ -40,10 +40,10 @@ vous permettra de tester rapidement votre fichier de traduction dans un monde.
 
 ### Rapport de bug
 
-Merci d’ouvrir un ticket : https://github.com/DjLeChuck/foundryvtt-babele-translation-files-generator/issues
+Merci d’ouvrir un ticket : https://github.com/Enielka/foundryvtt-dnd5e-babele-translation-files-generator/issues
 
 Vous pouvez aussi proposer un fix via une pull
-request : https://github.com/DjLeChuck/foundryvtt-babele-translation-files-generator/pulls
+request : https://github.com/Enielka/foundryvtt-dnd5e-babele-translation-files-generator/pulls
 
 ---
 
@@ -53,15 +53,15 @@ This module allows you to generate the JSON translation file of a compendium in 
 of translations for systems and/or modules.
 
 It is possible to process any type of compendium and personalize the exported file using the mapping definition for
-Babele (for `Actor`, `Item` and `Adventure` compendiums).
+Babele (for `Actor`, `Item`, `Scene` and `Adventure` compendiums).
 
 ## Installation
 
-The system can be installed directly from Foundry by searching for its name: `Babele Translation Files Generator`.
+The system can be installed directly from Foundry by searching for its name: `DnD5e - Translation files generator for Babele`.
 You'll then have the latest version and benefit from automatic updates.
 
 Alternatively, you can add it using its manifest link:
-`https://github.com/DjLeChuck/foundryvtt-babele-translation-files-generator/releases/latest/download/module.json`
+`https://github.com/Enielka/foundryvtt-dnd5e-babele-translation-files-generator/releases/latest/download/module.json`
 
 ## Usage
 
@@ -81,7 +81,7 @@ quickly test your translation file in a world.
 
 ### Bug report
 
-Please open a ticket: https://github.com/DjLeChuck/foundryvtt-babele-translation-files-generator/issues
+Please open a ticket: https://github.com/Enielka/foundryvtt-dnd5e-babele-translation-files-generator/issues
 
 You can also propose a fix via a pull
-request: https://github.com/DjLeChuck/foundryvtt-babele-translation-files-generator/pulls
+request: https://github.com/Enielka/foundryvtt-dnd5e-babele-translation-files-generator/pulls

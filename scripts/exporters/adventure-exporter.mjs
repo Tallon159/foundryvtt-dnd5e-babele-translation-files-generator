@@ -1,4 +1,5 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
+import { deepEqual } from '../helpers/compare.mjs';
 import * as exporters from './_index.mjs';
 
 export class AdventureExporter extends AbstractExporter {
@@ -31,67 +32,72 @@ export class AdventureExporter extends AbstractExporter {
 
       // Scenes
       for (const document of avPack.scenes) {
-        this.dataset.entries[avPack.name].scenes[document.name] = foundry.utils.mergeObject(
-          exporters.SceneExporter.getDocumentData(document, document),
-          (this.existingContent[avPack.name]?.scenes ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.SceneExporter.getDocumentData(document, this.options.customMapping);
+
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].scenes[key] && !deepEqual(this.dataset.entries[avPack.name].scenes[key], documentData) ? document._id : key;
+
+        this.dataset.entries[avPack.name].scenes[key] = foundry.utils.mergeObject(documentData, (this.existingContent[avPack.name]?.scenes ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }
 
       // Macros
       for (const document of avPack.macros) {
-        this.dataset.entries[avPack.name].macros[document.name] = foundry.utils.mergeObject(
-          exporters.MacroExporter.getDocumentData(document),
-          (this.existingContent[avPack.name]?.macros ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.MacroExporter.getDocumentData(document);
+
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].macros[key] && !deepEqual(this.dataset.entries[avPack.name].macros[key], documentData) ? document._id : key;
+
+        this.dataset.entries[avPack.name].macros[key] = foundry.utils.mergeObject(documentData, (this.existingContent[avPack.name]?.macros ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }
 
       // Playlists
       for (const document of avPack.playlists) {
-        this.dataset.entries[avPack.name].playlists[document.name] = foundry.utils.mergeObject(
-          exporters.PlaylistExporter.getDocumentData(document, document),
-          (this.existingContent[avPack.name]?.playlists ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.PlaylistExporter.getDocumentData(document);
+
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].playlists[key] && !deepEqual(this.dataset.entries[avPack.name].playlists[key], documentData) ? document._id : key;
+
+        this.dataset.entries[avPack.name].playlists[key] = foundry.utils.mergeObject(documentData, (this.existingContent[avPack.name]?.playlists ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }
 
       // Actors
       for (const document of avPack.actors) {
-        this.dataset.entries[avPack.name].actors[document.name] = foundry.utils.mergeObject(
-          exporters.ActorExporter.getDocumentData(
-            document,
-            document,
-            this.options.customMapping.actor,
-          ),
-          (this.existingContent[avPack.name]?.actors ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.ActorExporter.getDocumentData(document, this.options.customMapping, this.options.useItemMapping);
+        
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].actors[key] && !deepEqual(this.dataset.entries[avPack.name].actors[key], documentData) ? document._id : key;
+
+        this.dataset.entries[avPack.name].actors[key] = foundry.utils.mergeObject(documentData, (this.existingContent[avPack.name]?.actors ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }
 
       // Items
       for (const document of avPack.items) {
-        this.dataset.entries[avPack.name].items[document.name] = foundry.utils.mergeObject(
-          exporters.ItemExporter.getDocumentData(
-            document,
-            this.options.customMapping.item,
-          ),
-          (this.existingContent[avPack.name]?.items ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.ItemExporter.getDocumentData(document, this.options.customMapping.item);
+
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].items[key] && !deepEqual(this.dataset.entries[avPack.name].items[key], documentData) ? document._id : key;
+
+        this.dataset.entries[avPack.name].items[key] = foundry.utils.mergeObject(documentData, (this.existingContent[avPack.name]?.items ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }
 
       // Tables
       for (const document of avPack.tables) {
-        this.dataset.entries[avPack.name].tables[document.name] = foundry.utils.mergeObject(
-          exporters.RollTableExporter.getDocumentData(document, document),
-          (this.existingContent[avPack.name]?.tables ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.RollTableExporter.getDocumentData(document);
+
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].tables[key] && !deepEqual(this.dataset.entries[avPack.name].tables[key], documentData) ? document._id : key;
+
+        this.dataset.entries[avPack.name].tables[key] = foundry.utils.mergeObject(documentData, (this.existingContent[avPack.name]?.tables ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }
@@ -105,20 +111,24 @@ export class AdventureExporter extends AbstractExporter {
 
       // Journals
       for (const document of avPack.journal) {
-        this.dataset.entries[avPack.name].journals[document.name] = foundry.utils.mergeObject(
-          exporters.JournalEntryExporter.getDocumentData(document, document),
-          (this.existingContent[avPack.name]?.journals ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.JournalEntryExporter.getDocumentData(document);
+
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].journals[key] && !deepEqual(this.dataset.entries[avPack.name].journals[key], documentData) ? document._id : key;
+        
+        this.dataset.entries[avPack.name].journals[key] = foundry.utils.mergeObject(documentData,(this.existingContent[avPack.name]?.journals ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }
 
       // Cards
       for (const document of avPack.cards) {
-        this.dataset.entries[avPack.name].cards[document.name] = foundry.utils.mergeObject(
-          exporters.CardsExporter.getDocumentData(document, document),
-          (this.existingContent[avPack.name]?.cards ?? {})[document.name] ?? {},
-        );
+        const documentData = exporters.CardsExporter.getDocumentData(document);
+
+        let key = this.options.useIdAsKey ? document._id : document.name;
+        key = this.dataset.entries[avPack.name].cards[key] && !deepEqual(this.dataset.entries[avPack.name].cards[key], documentData) ? document._id : key;
+
+        this.dataset.entries[avPack.name].cards[key] = foundry.utils.mergeObject(documentData, (this.existingContent[avPack.name]?.cards ?? {})[key] ?? {});
 
         this._stepProgressBar();
       }

@@ -1,20 +1,23 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
+import { deepEqual } from '../helpers/compare.mjs';
 
 export class MacroExporter extends AbstractExporter {
-  static getDocumentData(indexDocument) {
-    const { name, command } = indexDocument;
+  static getDocumentData(document) {
+    const { name, command } = document;
 
     return { name, command };
   }
 
   async _processDataset() {
-    const documents = await this.pack.getIndex({ fields: ['command'] });
+    const documents = await this.pack.getIndex();
 
     for (const indexDocument of documents) {
-      this.dataset.entries[indexDocument.name] = foundry.utils.mergeObject(
-        MacroExporter.getDocumentData(indexDocument),
-        this.existingContent[indexDocument.name] ?? {},
-      );
+      const documentData = MacroExporter.getDocumentData(indexDocument);
+
+      let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
+      key = this.dataset.entries[key] && !deepEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
+      
+      this.dataset.entries[key] = foundry.utils.mergeObject(documentData, this.existingContent[key] ?? {});
 
       this._stepProgressBar();
     }

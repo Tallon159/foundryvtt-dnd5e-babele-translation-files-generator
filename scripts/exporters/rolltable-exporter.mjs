@@ -1,16 +1,15 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
+import { deepEqual } from '../helpers/compare.mjs';
 
 export class RollTableExporter extends AbstractExporter {
-  static getDocumentData(indexDocument, document) {
-    const { name, description } = indexDocument;
-    const documentData = { name, description };
+  static getDocumentData(document) {
+    const { name, description } = document;
+    const documentData = { name, ...(description && { description }) };
 
     if (AbstractExporter._hasContent(document.results)) {
-      documentData.results = {};
-
-      for (const { range, text } of document.results) {
-        documentData.results[`${range[0]}-${range[1]}`] = text;
-      }
+      documentData.results = Object.fromEntries(
+        document.results.map(({ range, text }) => [`${range[0]}-${range[1]}`, text])
+      );
     }
 
     return documentData;
@@ -20,13 +19,12 @@ export class RollTableExporter extends AbstractExporter {
     const documents = await this.pack.getIndex();
 
     for (const indexDocument of documents) {
-      this.dataset.entries[indexDocument.name] = foundry.utils.mergeObject(
-        RollTableExporter.getDocumentData(
-          indexDocument,
-          await this.pack.getDocument(indexDocument._id),
-        ),
-        this.existingContent[indexDocument.name] ?? {},
-      );
+      const documentData = RollTableExporter.getDocumentData(await this.pack.getDocument(indexDocument._id));
+
+      let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
+      key = this.dataset.entries[key] && !deepEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
+      
+      this.dataset.entries[key] = foundry.utils.mergeObject(documentData, this.existingContent[key] ?? {});
 
       this._stepProgressBar();
     }

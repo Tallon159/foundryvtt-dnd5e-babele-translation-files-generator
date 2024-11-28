@@ -19,13 +19,9 @@
         <p class="notes">{{localize "BTFG.CompendiumExporter.CustomMappingHint"}}</p>
 
         {{#if actorMapping}}
-          {{> (template "_default-mapping.html.hbs") type="actor" mapping=object.customMapping.actor}}
-        {{/if}}
-
-        {{#if adventureMapping}}
           <nav class="sheet-tabs tabs" data-group="primary">
             <a class="item" data-tab="actor">{{localize "BTFG.CompendiumExporter.ActorMapping"}}</a>
-            <a class="item" data-tab="item">{{localize "BTFG.CompendiumExporter.ItemMapping"}}</a>
+            <a class="item" data-tab="item">{{localize "BTFG.CompendiumExporter.ActorItemMapping"}}</a>
           </nav>
 
           <section class="sheet-body">
@@ -38,8 +34,32 @@
           </section>
         {{/if}}
 
+        {{#if adventureMapping}}
+          <nav class="sheet-tabs tabs" data-group="primary">
+            <a class="item" data-tab="actor">{{localize "BTFG.CompendiumExporter.ActorMapping"}}</a>
+            <a class="item" data-tab="item">{{localize "BTFG.CompendiumExporter.ItemMapping"}}</a>
+            <a class="item" data-tab="scene">{{localize "BTFG.CompendiumExporter.SceneMapping"}}</a>
+          </nav>
+
+          <section class="sheet-body">
+            <div class="tab" data-group="primary" data-tab="actor">
+              {{> (template "_default-mapping.html.hbs") type="actor" mapping=object.customMapping.actor}}
+            </div>
+            <div class="tab" data-group="primary" data-tab="item">
+              {{> (template "_default-mapping.html.hbs") type="item" mapping=object.customMapping.item}}
+            </div>
+            <div class="tab" data-group="primary" data-tab="scene">
+              {{> (template "_default-mapping.html.hbs") type="scene" mapping=object.customMapping.scene}}
+            </div>
+          </section>
+        {{/if}}
+
         {{#if itemMapping}}
           {{> (template "_default-mapping.html.hbs") type="item" mapping=object.customMapping.item}}
+        {{/if}}
+
+        {{#if sceneMapping}}
+          {{> (template "_default-mapping.html.hbs") type="scene" mapping=object.customMapping.scene}}
         {{/if}}
       </fieldset>
     </div>
@@ -59,9 +79,25 @@
     {{/if}}
     <p class="notes">{{localize "BTFG.CompendiumExporter.UseExistingFileHint"}}</p>
   </div>
+  {{#if canCustomizeMapping}}
+    {{#if adventureMapping}}
+      <div class="form-group">
+        <label for="useItemMapping">{{localize "BTFG.CompendiumExporter.useItemMapping"}}</label>
+        <input type="checkbox" value="1" id="useItemMapping" name="useItemMapping" {{checked object.useItemMapping}} />
+      </div>
+    {{/if}}
+  {{/if}}
   <div class="form-group">
     <label for="sortEntries">{{localize "BTFG.CompendiumExporter.SortEntriesAlpha"}}</label>
     <input type="checkbox" value="1" id="sortEntries" name="sortEntries" {{checked object.sortEntries}} />
+  </div>
+  <div class="form-group">
+    <label for="sortFolders">{{localize "BTFG.CompendiumExporter.SortFoldersAlpha"}}</label>
+    <input type="checkbox" value="1" id="sortFolders" name="sortFolders" {{checked object.sortFolders}} />
+  </div>
+  <div class="form-group">
+    <label for="useIdAsKey">{{localize "BTFG.CompendiumExporter.UseIdAsKey"}}</label>
+    <input type="checkbox" value="1" id="useIdAsKey" name="useIdAsKey" {{checked object.useIdAsKey}} />
   </div>
   <div class="form-group">
     <label for="generateModule">{{localize "BTFG.CompendiumExporter.GenerateModule"}}</label>

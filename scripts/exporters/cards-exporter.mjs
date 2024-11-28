@@ -1,16 +1,17 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
+import { deepEqual } from '../helpers/compare.mjs';
 
 export class CardsExporter extends AbstractExporter {
-  static getDocumentData(indexDocument, document) {
-    const { name, description } = indexDocument;
+  static getDocumentData(document) {
+    const { name, description } = document;
     const documentData = { name, description };
 
     if (AbstractExporter._hasContent(document.cards)) {
-      documentData.cards = {};
-
-      for (const { name, description, back, faces } of document.cards) {
-        documentData.cards[name] = { name, description, back, faces };
-      }
+      documentData.cards = Object.fromEntries(
+        document.cards.map(({ name, description, back, faces }) => [
+          name, { name, description, back, faces }
+        ])
+      );
     }
 
     return documentData;
@@ -20,13 +21,12 @@ export class CardsExporter extends AbstractExporter {
     const documents = await this.pack.getIndex();
 
     for (const indexDocument of documents) {
-      this.dataset.entries[indexDocument.name] = foundry.utils.mergeObject(
-        CardsExporter.getDocumentData(
-          indexDocument,
-          await this.pack.getDocument(indexDocument._id),
-        ),
-        this.existingContent[indexDocument.name],
-      );
+      const documentData = CardsExporter.getDocumentData(await this.pack.getDocument(indexDocument._id));
+
+      let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
+      key = this.dataset.entries[key] && !deepEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
+      
+      this.dataset.entries[key] = foundry.utils.mergeObject(documentData, this.existingContent[key]);
 
       this._stepProgressBar();
     }

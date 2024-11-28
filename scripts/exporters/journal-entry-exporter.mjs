@@ -1,44 +1,32 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
+import { deepEqual } from '../helpers/compare.mjs';
 
 export class JournalEntryExporter extends AbstractExporter {
-  static getDocumentData(indexDocument, document) {
-    const { name } = indexDocument;
-    const documentData = { name };
+  static getDocumentData(document) {
+    const documentData = { name: document.name };
 
     if (AbstractExporter._hasContent(document.pages)) {
-      documentData.pages = {};
-
-      for (const {
-        name,
-        image: { caption } = {},
-        src,
-        video: { width, height } = {},
-        text: { content: text } = {}
-      } of document.pages) {
-        const pageData = { name };
-
-        if (caption) {
-          pageData.caption = caption;
-        }
-
-        if (src) {
-          pageData.src = src;
-        }
-
-        if (width) {
-          pageData.width = width;
-        }
-
-        if (height) {
-          pageData.height = height;
-        }
-
-        if (text) {
-          pageData.text = text;
-        }
-
-        documentData.pages[name] = pageData;
-      }
+      documentData.pages = Object.fromEntries(
+        document.pages.map(({
+          name,
+          image: { caption } = {},
+          src,
+          video: { width, height } = {},
+          text: { content: text } = {},
+          system : { tooltip } = {}
+        }) => [
+          name, 
+          { 
+            name,
+            ...(caption && { caption }),
+            ...(src && { src }),
+            ...(width && { width }),
+            ...(height && { height }),
+            ...(text && { text }),
+            ...(tooltip && { tooltip })
+          }
+        ])
+      );
     }
 
     return documentData;
@@ -48,13 +36,12 @@ export class JournalEntryExporter extends AbstractExporter {
     const documents = await this.pack.getIndex();
 
     for (const indexDocument of documents) {
-      this.dataset.entries[indexDocument.name] = foundry.utils.mergeObject(
-        JournalEntryExporter.getDocumentData(
-          indexDocument,
-          await this.pack.getDocument(indexDocument._id),
-        ),
-        this.existingContent[indexDocument.name] ?? {},
-      );
+      const documentData = JournalEntryExporter.getDocumentData(await this.pack.getDocument(indexDocument._id));
+
+      let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
+      key = this.dataset.entries[key] && !deepEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
+      
+      this.dataset.entries[key] = foundry.utils.mergeObject(documentData, this.existingContent[key] ?? {});
 
       this._stepProgressBar();
     }
