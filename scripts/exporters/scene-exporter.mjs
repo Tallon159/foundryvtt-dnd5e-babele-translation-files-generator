@@ -1,6 +1,5 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
 import { ItemExporter } from './item-exporter.mjs';
-import { deepEqual } from '../helpers/compare.mjs';
 
 export class SceneExporter extends AbstractExporter {
   static getDocumentData(document, customMapping) {
@@ -73,7 +72,7 @@ export class SceneExporter extends AbstractExporter {
       );
 
       let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
-      key = this.dataset.entries[key] && !deepEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
+      key = this.dataset.entries[key] && !foundry.utils.objectsEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
 
       this.dataset.entries[key] = foundry.utils.mergeObject(documentData, this.existingContent[key] ?? {});
 

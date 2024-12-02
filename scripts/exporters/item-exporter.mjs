@@ -1,14 +1,32 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
-import { deepEqual } from '../helpers/compare.mjs';
 
 export class ItemExporter extends AbstractExporter {
   static getDocumentData(document, customMapping) {
-    const { name, system: { description: { value: descriptionValue } } } = document;
+    const { name, system } = document;
     const documentData = { name };
 
-    if (descriptionValue) documentData.description = descriptionValue;
+    if (system.description.value) documentData.description = system.description.value;
 
     AbstractExporter._addCustomMapping(customMapping, document, documentData);
+
+    if (system.activities) {
+      Object.keys(system.activities).forEach(activity => {
+        const { name, activation, description, roll, type, _id } = system.activities[activity];
+        const currentActivity = {};
+    
+        if (name) currentActivity.name = name;
+        if (roll?.name) currentActivity.roll = roll.name;
+        if (activation?.condition) currentActivity.condition = activation.condition;
+        if (description?.chatFlavor) currentActivity.chatFlavor = description.chatFlavor;
+    
+        if (Object.keys(currentActivity).length) {
+          documentData.activities = documentData.activities ?? {};
+          let key = type === "cast" && !name ? _id : name?.length ? name : type;
+          key = documentData.activities[key] ? _id : key;
+          documentData.activities[key] = currentActivity;
+        }
+      });
+    }
 
     if (AbstractExporter._hasContent(document.effects)) {
       documentData.effects = Object.fromEntries(
@@ -32,7 +50,7 @@ export class ItemExporter extends AbstractExporter {
       );
 
       let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
-      key = this.dataset.entries[key] && !deepEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
+      key = this.dataset.entries[key] && !foundry.utils.objectsEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
 
       this.dataset.entries[key] = foundry.utils.mergeObject(documentData, this.existingContent[key] ?? {});
 

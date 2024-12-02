@@ -1,5 +1,4 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
-import { deepEqual } from '../helpers/compare.mjs';
 
 export class MacroExporter extends AbstractExporter {
   static getDocumentData(document) {
@@ -15,7 +14,7 @@ export class MacroExporter extends AbstractExporter {
       const documentData = MacroExporter.getDocumentData(indexDocument);
 
       let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
-      key = this.dataset.entries[key] && !deepEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
+      key = this.dataset.entries[key] && !foundry.utils.objectsEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;
       
       this.dataset.entries[key] = foundry.utils.mergeObject(documentData, this.existingContent[key] ?? {});
 
