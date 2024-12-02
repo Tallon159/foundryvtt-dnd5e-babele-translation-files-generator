@@ -14,7 +14,7 @@ export class ActorExporter extends AbstractExporter {
       documentData.items = Object.fromEntries(
         document.items.map(item => [
           item.name,
-          ItemExporter.getDocumentData(item, useItemMapping ? customMapping.item : {})
+          ItemExporter.getDocumentData(foundry.utils.duplicate(item), useItemMapping ? customMapping.item : {})
         ])
       );
     }

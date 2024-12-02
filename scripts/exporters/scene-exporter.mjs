@@ -42,7 +42,7 @@ export class SceneExporter extends AbstractExporter {
           documentData.deltaTokens[tokenName].items = {};
           for (const item of items) {
             if (item.name) {
-              documentData.deltaTokens[tokenName].items[item.name] = ItemExporter.getDocumentData(item, customMapping.item ?? customMapping);
+              documentData.deltaTokens[tokenName].items[item.name] = ItemExporter.getDocumentData(foundry.utils.duplicate(item), customMapping.item ?? customMapping);
             }
           }
         }
