@@ -11,7 +11,7 @@ export class ItemExporter extends AbstractExporter {
 
     if (system.activities) {
       Object.keys(system.activities).forEach(activity => {
-        const { name, activation, description, roll, type, _id } = system.activities[activity];
+        const { name, activation, description, roll, type, _id, profiles } = system.activities[activity];
         const currentActivity = {};
     
         if (name) currentActivity.name = name;
@@ -19,6 +19,15 @@ export class ItemExporter extends AbstractExporter {
         if (activation?.condition) currentActivity.condition = activation.condition;
         if (description?.chatFlavor) currentActivity.chatFlavor = description.chatFlavor;
     
+        if (profiles) {
+          const filteredProfiles = profiles
+          .filter(({ name }) => name)
+          .map(({ name }) => [ name, { name } ]);
+
+          if (AbstractExporter._hasContent(filteredProfiles))
+            currentActivity.profiles = Object.fromEntries(filteredProfiles);
+        }
+
         if (Object.keys(currentActivity).length) {
           documentData.activities = documentData.activities ?? {};
           let key = type === "cast" && !name ? _id : name?.length ? name : type;
