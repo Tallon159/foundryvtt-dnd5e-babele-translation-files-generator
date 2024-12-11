@@ -11,12 +11,12 @@ export class ActorExporter extends AbstractExporter {
     AbstractExporter._addCustomMapping(customMapping.actor, document, documentData);
 
     if (AbstractExporter._hasContent(document.items)) {
-      documentData.items = Object.fromEntries(
-        document.items.map(item => [
-          item.name,
-          ItemExporter.getDocumentData(foundry.utils.duplicate(item), useItemMapping ? customMapping.item : {})
-        ])
-      );
+      documentData.items = {};
+      document.items.forEach(item => {
+        const itemData = ItemExporter.getDocumentData(foundry.utils.duplicate(item), useItemMapping ? customMapping.item : {});
+        const key = documentData.items[item.name] && !foundry.utils.objectsEqual(documentData.items[item.name], itemData) ? item._id : item.name;
+        documentData.items[key] = itemData;
+      });
     }
 
     if (AbstractExporter._hasContent(document.effects)) {
