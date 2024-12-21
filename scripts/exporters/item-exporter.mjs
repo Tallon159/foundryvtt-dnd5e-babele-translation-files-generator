@@ -38,12 +38,20 @@ export class ItemExporter extends AbstractExporter {
     }
 
     if (AbstractExporter._hasContent(document.effects)) {
-      documentData.effects = Object.fromEntries(
-        document.effects.map(({ name, description }) => [
-          name,
-          { name, ...(description && { description }) }
-        ])
-      );
+      documentData.effects = {};
+      document.effects.forEach(effect => {
+        const { _id, name, description, changes } = effect;
+        const changesObj = changes.reduce((acc, change) => {
+          if (change.key === 'name') acc.name = change.value;
+          if (change.key === 'system.description.value') acc['system.description.value'] = change.value;
+          return acc;
+        }, {});
+
+        const effectData = { name, ...description && { description }, ...Object.keys(changesObj).length && { changes: changesObj } };
+        
+        const key = documentData.effects[name] && !foundry.utils.objectsEqual(documentData.effects[name], effectData) ? _id : name;
+        documentData.effects[key] = effectData;
+      });
     }
 
     return documentData;
