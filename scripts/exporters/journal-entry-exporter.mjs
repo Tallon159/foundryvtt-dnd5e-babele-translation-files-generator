@@ -12,7 +12,16 @@ export class JournalEntryExporter extends AbstractExporter {
           src,
           video: { width, height } = {},
           text: { content: text } = {},
-          system : { tooltip } = {}
+          system: {
+            tooltip,
+            description: {
+              value: description,
+              additionalEquipment,
+              additionalHitPoints,
+              additionalTraits,
+              subclass
+            } = {}
+          } = {}
         }) => [
           name, 
           { 
@@ -22,7 +31,12 @@ export class JournalEntryExporter extends AbstractExporter {
             ...(width && { width }),
             ...(height && { height }),
             ...(text && { text }),
-            ...(tooltip && { tooltip })
+            ...(tooltip && { tooltip }),
+            ...(description && { description }),
+            ...(additionalEquipment && { additionalEquipment }),
+            ...(additionalHitPoints && { additionalHitPoints }),
+            ...(additionalTraits && { additionalTraits }),
+            ...(subclass && { subclass })
           }
         ])
       );
