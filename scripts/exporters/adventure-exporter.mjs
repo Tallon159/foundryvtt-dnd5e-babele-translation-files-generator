@@ -110,7 +110,7 @@ export class AdventureExporter extends AbstractExporter {
 
       // Journals
       for (const document of avPack.journal) {
-        const documentData = exporters.JournalEntryExporter.getDocumentData(document);
+        const documentData = exporters.JournalEntryExporter.getDocumentData(document, this.options.customMapping);
 
         let key = this.options.useIdAsKey ? document._id : document.name;
         key = this.dataset.entries[avPack.name].journals[key] && !foundry.utils.objectsEqual(this.dataset.entries[avPack.name].journals[key], documentData) ? document._id : key;

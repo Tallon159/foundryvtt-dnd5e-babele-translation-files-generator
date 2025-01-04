@@ -39,6 +39,7 @@
             <a class="item" data-tab="actor">{{localize "BTFG.CompendiumExporter.ActorMapping"}}</a>
             <a class="item" data-tab="item">{{localize "BTFG.CompendiumExporter.ItemMapping"}}</a>
             <a class="item" data-tab="scene">{{localize "BTFG.CompendiumExporter.SceneMapping"}}</a>
+            <a class="item" data-tab="journalEntry">{{localize "BTFG.CompendiumExporter.JournalEntryMapping"}}</a>
           </nav>
 
           <section class="sheet-body">
@@ -51,6 +52,9 @@
             <div class="tab" data-group="primary" data-tab="scene">
               {{> (template "_default-mapping.html.hbs") type="scene" mapping=object.customMapping.scene}}
             </div>
+            <div class="tab" data-group="primary" data-tab="journalEntry">
+              {{> (template "_default-mapping.html.hbs") type="journalEntry" mapping=object.customMapping.journalEntry}}
+            </div>
           </section>
         {{/if}}
 
@@ -60,6 +64,10 @@
 
         {{#if sceneMapping}}
           {{> (template "_default-mapping.html.hbs") type="scene" mapping=object.customMapping.scene}}
+        {{/if}}
+
+        {{#if journalEntryMapping}}
+          {{> (template "_default-mapping.html.hbs") type="journalEntry" mapping=object.customMapping.journalEntry}}
         {{/if}}
       </fieldset>
     </div>

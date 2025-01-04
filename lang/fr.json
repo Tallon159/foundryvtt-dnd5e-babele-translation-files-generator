@@ -36,6 +36,7 @@
   "BTFG.CompendiumExporter.ActorMapping": "Mapping des acteurs",
   "BTFG.CompendiumExporter.ItemMapping": "Mapping des objets",
   "BTFG.CompendiumExporter.SceneMapping": "Mapping des scènes",
+  "BTFG.CompendiumExporter.JournalEntryMapping": "Mapping des journaux",
   "BTFG.CompendiumExporter.ActorItemMapping": "Mapping des objets d'acteurs",
   "BTFG.Errors.CanNotGenerateModule": "Une erreur est survenue lors de la génération du module. Merci de regarder les logs en console pour plus d’informations.",
   "BTFG.Errors.CanNotReadFile": "Impossible de lire le fichier {name}",

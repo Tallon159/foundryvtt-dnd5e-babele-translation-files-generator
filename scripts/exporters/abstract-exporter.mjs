@@ -96,7 +96,7 @@ export class AbstractExporter {
 
         break;
       case 'Adventure':
-        this.dataset.mapping = { actors: {}, items: {}, scenes: {} };
+        this.dataset.mapping = { actors: {}, items: {}, scenes: {}, journals: {} };
 
         Object.values(this.options.customMapping.actor).forEach(
           ({ key, value }) => this.dataset.mapping.actors[key] = value,
@@ -107,6 +107,9 @@ export class AbstractExporter {
         Object.values(this.options.customMapping.scene).forEach(
           ({ key, value }) => this.dataset.mapping.scenes[key] = value,
         );
+        Object.values(this.options.customMapping.journalEntry).forEach(
+          ({ key, value }) => this.dataset.mapping.journals[key] = value,
+        );
 
         break;
       case 'Item':
@@ -115,6 +118,10 @@ export class AbstractExporter {
         break;
       case 'Scene':
         Object.values(this.options.customMapping.scene).forEach(({ key, value }) => this.dataset.mapping[key] = value);
+
+        break;
+      case 'JournalEntry':
+        Object.values(this.options.customMapping.journalEntry).forEach(({ key, value }) => this.dataset.mapping[key] = value);
 
         break;
     }

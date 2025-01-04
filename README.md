@@ -12,7 +12,7 @@ Ce module permet de générer le fichier de traduction JSON d’un compendium af
 traductions pour des systèmes et/ou modules.
 
 Il est possible de traiter n’importe quel type de compendium et de personnaliser le fichier exporté grâce à la
-définition de mapping pour Babele (pour les compendiums `Actor`, `Item`, `Scene` et `Adventure`).
+définition de mapping pour Babele (pour les compendiums `Actor`, `Item`, `Scene`, `JournalEntry` et `Adventure`).
 
 ## Installation
 
@@ -53,7 +53,7 @@ This module allows you to generate the JSON translation file of a compendium in 
 of translations for systems and/or modules.
 
 It is possible to process any type of compendium and personalize the exported file using the mapping definition for
-Babele (for `Actor`, `Item`, `Scene` and `Adventure` compendiums).
+Babele (for `Actor`, `Item`, `Scene`, `JournalEntry` and `Adventure` compendiums).
 
 ## Installation
 

@@ -1,8 +1,10 @@
 import { AbstractExporter } from './abstract-exporter.mjs';
 
 export class JournalEntryExporter extends AbstractExporter {
-  static getDocumentData(document) {
+  static getDocumentData(document, customMapping) {
     const documentData = { name: document.name };
+
+    AbstractExporter._addCustomMapping(customMapping.journalEntry, document, documentData);
 
     if (AbstractExporter._hasContent(document.pages)) {
       documentData.pages = Object.fromEntries(
@@ -21,7 +23,8 @@ export class JournalEntryExporter extends AbstractExporter {
               additionalTraits,
               subclass
             } = {}
-          } = {}
+          } = {},
+          flags: { dnd5e: { title: flagsTitle } = {} } = {}
         }) => [
           name, 
           { 
@@ -36,7 +39,8 @@ export class JournalEntryExporter extends AbstractExporter {
             ...(additionalEquipment && { additionalEquipment }),
             ...(additionalHitPoints && { additionalHitPoints }),
             ...(additionalTraits && { additionalTraits }),
-            ...(subclass && { subclass })
+            ...(subclass && { subclass }),
+            ...(flagsTitle && { flagsTitle })
           }
         ])
       );
@@ -49,7 +53,10 @@ export class JournalEntryExporter extends AbstractExporter {
     const documents = await this.pack.getIndex();
 
     for (const indexDocument of documents) {
-      const documentData = JournalEntryExporter.getDocumentData(await this.pack.getDocument(indexDocument._id));
+      const documentData = JournalEntryExporter.getDocumentData(
+        await this.pack.getDocument(indexDocument._id),
+        this.options.customMapping
+      );
 
       let key = this.options.useIdAsKey ? indexDocument._id : indexDocument.name;
       key = this.dataset.entries[key] && !foundry.utils.objectsEqual(this.dataset.entries[key], documentData) ? indexDocument._id : key;

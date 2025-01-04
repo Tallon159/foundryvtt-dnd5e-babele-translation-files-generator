@@ -12,7 +12,8 @@ export class CompendiumExporterApp extends FormApplication {
     customMapping: {
       actor: {},
       item: {},
-      scene: {}
+      scene: {},
+      journalEntry: {}
     },
   };
   packId = null;
@@ -65,7 +66,8 @@ export class CompendiumExporterApp extends FormApplication {
       context.adventureMapping = 'Adventure' === context.pack.metadata.type;
       context.itemMapping = 'Item' === context.pack.metadata.type;
       context.sceneMapping = 'Scene' === context.pack.metadata.type;
-      context.canCustomizeMapping = context.actorMapping || context.adventureMapping || context.itemMapping || context.sceneMapping;
+      context.journalEntryMapping = 'JournalEntry' === context.pack.metadata.type;
+      context.canCustomizeMapping = context.actorMapping || context.adventureMapping || context.itemMapping || context.sceneMapping || context.journalEntryMapping;
       context.selectedFileName = this.selectedFile?.name;
     }
 
@@ -234,7 +236,8 @@ export class CompendiumExporterApp extends FormApplication {
     this.object.customMapping = packsMappings[this.packId.replace('.', '-')] ?? {
       actor: {},
       item: {},
-      scene: {}
+      scene: {},
+      journalEntry: {}
     };
   }
 
@@ -269,6 +272,12 @@ export class CompendiumExporterApp extends FormApplication {
       if (json.mapping?.scenes) {
         for (const [key, value] of Object.entries(json.mapping.scenes)) {
           this._addCustomMappingEntry('scene', { key, value });
+        }
+      }
+
+      if (json.mapping?.journals) {
+        for (const [key, value] of Object.entries(json.mapping.journals)) {
+          this._addCustomMappingEntry('journalEntry', { key, value });
         }
       }
 
@@ -316,6 +325,12 @@ export class CompendiumExporterApp extends FormApplication {
       if (json?.scene) {
         for (const { key, value } of Object.values(json.scene)) {
           this._addCustomMappingEntry('scene', { key, value });
+        }
+      }
+
+      if (json?.journalEntry) {
+        for (const { key, value } of Object.values(json.journalEntry)) {
+          this._addCustomMappingEntry('journalEntry', { key, value });
         }
       }
 
