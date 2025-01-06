@@ -16,6 +16,8 @@ export class JournalEntryExporter extends AbstractExporter {
           text: { content: text } = {},
           system: {
             tooltip,
+            subclassHeader,
+            unlinkedSpells,
             description: {
               value: description,
               additionalEquipment,
@@ -35,12 +37,17 @@ export class JournalEntryExporter extends AbstractExporter {
             ...(height && { height }),
             ...(text && { text }),
             ...(tooltip && { tooltip }),
+            ...(subclassHeader && { subclassHeader }),
             ...(description && { description }),
             ...(additionalEquipment && { additionalEquipment }),
             ...(additionalHitPoints && { additionalHitPoints }),
             ...(additionalTraits && { additionalTraits }),
             ...(subclass && { subclass }),
-            ...(flagsTitle && { flagsTitle })
+            ...(flagsTitle && { flagsTitle }),
+            ...(unlinkedSpells && Object.keys(unlinkedSpells).length > 0 && {
+              unlinkedSpells: Object.fromEntries(Object.entries(unlinkedSpells).map(
+                ([key, value]) => [value.name, { name: value.name }]))
+            })
           }
         ])
       );
