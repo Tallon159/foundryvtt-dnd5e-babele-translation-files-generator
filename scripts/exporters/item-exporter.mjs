@@ -54,6 +54,18 @@ export class ItemExporter extends AbstractExporter {
       });
     }
 
+    if (AbstractExporter._hasContent(system.advancement)) {
+      system.advancement.forEach(({ _id, title, hint }) => {
+        const advancementData = { ...title && { title }, ...hint && { hint } };
+
+        if (Object.keys(advancementData).length) {
+          documentData.advancement = documentData.advancement ?? {};
+          const key = !title?.length || (documentData.advancement[title] && !foundry.utils.objectsEqual(documentData.advancement[title], advancementData)) ? _id : title;
+          documentData.advancement[key] = advancementData;
+        }
+      });
+    }
+
     return documentData;
   }
 
